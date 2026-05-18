@@ -1,48 +1,77 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <title>360° 全景房间漫游</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>360度全景瀏覽器</title>
-   
-  <!-- 引入 Pannellum 的 CSS 樣式表 -->
+  <!-- Pannellum CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
-   
   <style>
-    /* 讓網頁滿版顯示，沒有白邊 */
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: #000;
+      font-family: sans-serif;
     }
-    /* 設定全景圖容器的大小 */
-    #panorama {
-      width: 100vw;
-      height: 100vh;
+    #panorama { width: 100%; height: 100%; }
+    #controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 999;
+      background: rgba(255,255,255,0.8);
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    #controls button {
+      margin-right: 5px;
+      padding: 5px 10px;
     }
   </style>
 </head>
 <body>
-
-  <!-- 這是用來裝載全景圖的區塊 -->
   <div id="panorama"></div>
+  <div id="controls">
+    <button onclick="switchPanorama('home.1.1.png')">客厅视角</button>
+    <button onclick="switchPanorama('home.1.2.png')">主卧视角</button>
+  </div>
 
-  <!-- 引入 Pannellum 的 JavaScript 核心檔案 -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-   
+  <!-- Pannellum JS -->
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
   <script>
-    // 初始化全景圖
-    pannellum.viewer('panorama', {
-      "type": "equirectangular", 
-      "panorama": "pano.jpg",   // ✅ 這裡已經幫你修好囉！
-      "autoLoad": true,     
-      "autoRotate": -2,     
-      "compass": false,     
-      "showControls": true    
+    // 初始化全景
+    let viewer = pannellum.viewer('panorama', {
+        "type": "equirectangular",
+        "panorama": "home.1.1.png", // 默认全景
+        "autoLoad": true,
+        "showZoomCtrl": true,
+        "autoRotate": 2, 
+        "hotSpots": [
+          {
+            "pitch": 5,
+            "yaw": 0,
+            "type": "info",
+            "text": "这是客厅沙发"
+          },
+          {
+            "pitch": -2,
+            "yaw": 90,
+            "type": "info",
+            "text": "楼梯通向二楼"
+          }
+        ]
     });
-  </script>
 
+    // 切换全景函数
+    function switchPanorama(image) {
+      viewer.loadScene("scene1", {
+        "type": "equirectangular",
+        "panorama": image,
+        "autoLoad": true
+      });
+    }
+  </script>
 </body>
 </html>
